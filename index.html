@@ -326,6 +326,70 @@
       color: var(--ink);
     }
 
+    .ending {
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .ending::before,
+    .ending::after {
+      content: "";
+      position: absolute;
+      width: 190px;
+      height: 190px;
+      border: 1px solid rgba(217, 70, 120, 0.22);
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .ending::before {
+      top: -86px;
+      left: -70px;
+      background: rgba(255, 225, 233, 0.42);
+    }
+
+    .ending::after {
+      right: -78px;
+      bottom: -92px;
+      background: rgba(255, 247, 216, 0.48);
+    }
+
+    .ending-mark {
+      width: min(230px, 62vw);
+      aspect-ratio: 1;
+      margin: 0 auto 24px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: clamp(4.8rem, 18vw, 8rem);
+      line-height: 1;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.55), transparent 26%),
+        linear-gradient(145deg, #e85d8d, #a9184c 62%, #7b1239);
+      box-shadow:
+        0 24px 58px rgba(169, 24, 76, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.44);
+      transform: rotate(-5deg);
+    }
+
+    .ending-line {
+      color: var(--rose-dark);
+      font-size: clamp(1.25rem, 3vw, 1.72rem);
+      font-style: italic;
+      max-width: 34ch;
+      margin-top: 22px;
+    }
+
+    .signature {
+      color: var(--gold);
+      font: 800 0.9rem/1.4 system-ui, sans-serif;
+      letter-spacing: 0.16em;
+      margin-top: 26px;
+      text-transform: uppercase;
+    }
+
     .floating-heart {
       position: fixed;
       z-index: 1;
@@ -495,7 +559,21 @@
             <div class="summary-row"><strong>Food</strong><span id="summaryFood"></span></div>
           </div>
           <div class="actions">
+            <button class="btn" data-next="ending" type="button">Seal the plan</button>
             <button class="btn secondary" id="startOver" type="button">Start Over</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="ending">
+        <div class="panel ending">
+          <div class="ending-mark" aria-hidden="true">♥</div>
+          <p class="kicker">The best part</p>
+          <h2>It is a date.</h2>
+          <p class="ending-line">I cannot wait to sit across from you, make you laugh, and quietly think, “how did I get this lucky?”</p>
+          <p class="signature">See you soon, my love</p>
+          <div class="actions">
+            <button class="btn secondary" id="endingStartOver" type="button">Play Again</button>
           </div>
         </div>
       </section>
@@ -645,7 +723,13 @@
     noBtn.addEventListener("mouseenter", moveNoButton);
 
     document.querySelectorAll("[data-next]").forEach((button) => {
-      button.addEventListener("click", () => showScreen(button.dataset.next));
+      button.addEventListener("click", () => {
+        showScreen(button.dataset.next);
+        if (button.dataset.next === "ending") {
+          burstConfetti();
+          launchHearts();
+        }
+      });
     });
 
     timeInput.addEventListener("change", () => {
@@ -695,6 +779,10 @@
       noBtn.removeAttribute("style");
       noNote.textContent = "";
       showScreen("proposal");
+    });
+
+    document.getElementById("endingStartOver").addEventListener("click", () => {
+      document.getElementById("startOver").click();
     });
 
     const today = new Date();
